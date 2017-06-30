@@ -20,6 +20,19 @@ app.post('/todos', function(req, res){
   })
 });
 
+app.get('/todos', function(req, res){
+  Todo.find().then((todos) => {
+    res.send({
+      todos
+    });
+  }, (err) => {
+    if(err){
+      res.status(400).send(err);
+    }
+  });
+});
+
+
 app.post('/user', (req, res) => {
   var newUser = new User({
     email: req.body.email
@@ -30,10 +43,6 @@ app.post('/user', (req, res) => {
   }, (err) => {
     res.status(400).send(err);
   })
-});
-
-app.get('/todos', function(req, res){
-  res.send('Yo!');
 });
 
 app.listen(3000, function(){
