@@ -52,19 +52,40 @@ app.get('/todos/:id', function(req, res){
 
 });
 
+app.delete('/todos/:id', function(req, res){
+  //get the id
+  var id = req.params.id;
 
-app.post('/user', (req, res) => {
-  var newUser = new User({
-    email: req.body.email
-  });
+  //validate if the id is a valid ID
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
 
-  newUser.save().then((user) =>{
-    res.send(user);
+  // Remove the todo with the specified ID
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo){
+      return res.status(404).send();
+    }
+    res.send(todo);
   }, (err) => {
-    res.status(400).send(err);
+    return res.status(400).send(err);
   })
+
 });
 
+
+// app.post('/user', (req, res) => {
+//   var newUser = new User({
+//     email: req.body.email
+//   });
+//
+//   newUser.save().then((user) =>{
+//     res.send(user);
+//   }, (err) => {
+//     res.status(400).send(err);
+//   })
+// });
+//
 app.listen(port, function(){
   console.log(`server started on port ${port}`);
 });
