@@ -97,24 +97,26 @@ app.patch('/todos/:id', function(req, res) {
       return res.status(404).send();
     }
     res.send({todo});
-  }).catch((e) => res.status(400).send());
+  }).catch((e) => res.status(400).send(e));
 
 });
 
 
 
-// app.post('/user', (req, res) => {
-//   var newUser = new User({
-//     email: req.body.email
-//   });
-//
-//   newUser.save().then((user) =>{
-//     res.send(user);
-//   }, (err) => {
-//     res.status(400).send(err);
-//   })
-// });
-//
+app.post('/users', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+
+  user.save().then(() =>{
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((err) => {
+    res.status(400).send(e);
+  })
+});
+
+
 app.listen(port, function(){
   console.log(`server started on port ${port}`);
 });
